@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap");
 
 :root {
   color: #1c1917;
@@ -26,7 +26,9 @@ body {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -42,4 +44,148 @@ img {
 ::selection {
   background: #d8b26e;
   color: #1c1917;
+}
+
+.font-serif {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+.section {
+  padding: 5rem 0;
+}
+
+.btn-dark,
+.btn-light,
+.pill-link,
+.icon-btn,
+.filter-select,
+.form-input,
+.qty-btn {
+  transition: border-color 180ms ease, background-color 180ms ease, color 180ms ease,
+    transform 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #1c1917;
+  color: #fff;
+  min-height: 3.5rem;
+  padding: 0 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.btn-dark:hover {
+  background: #292524;
+  transform: translateY(-1px);
+}
+
+.btn-light,
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d6d3d1;
+  border-radius: 999px;
+  background: #fff;
+  color: #1c1917;
+  min-height: 3.5rem;
+  padding: 0 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.btn-light:hover,
+.pill-link:hover {
+  border-color: #1c1917;
+}
+
+.icon-btn {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid #e7e5e4;
+  border-radius: 999px;
+  background: #fff;
+  color: #44403c;
+}
+
+.icon-btn:hover {
+  border-color: #1c1917;
+  color: #1c1917;
+}
+
+.filter-select,
+.form-input {
+  min-height: 3.5rem;
+  width: 100%;
+  border: 1px solid #e7e5e4;
+  border-radius: 999px;
+  background: #fff;
+  padding: 0 1.25rem;
+  color: #1c1917;
+  outline: none;
+}
+
+.form-input {
+  border-radius: 1.25rem;
+}
+
+.filter-select:focus,
+.form-input:focus {
+  border-color: #9c6f32;
+  box-shadow: 0 0 0 4px rgb(216 178 110 / 18%);
+}
+
+.qty-btn {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid #e7e5e4;
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 800;
+}
+
+.qty-btn:hover {
+  border-color: #1c1917;
+}
+
+.animate-rise {
+  animation: rise 700ms ease both;
+}
+
+.animate-fade {
+  animation: fade 900ms ease both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 4rem 0;
+  }
 }
