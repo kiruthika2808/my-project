@@ -18,9 +18,9 @@ export default function Navbar({ cartCount, wishlistCount }) {
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-[#fbfaf7]/90 backdrop-blur-xl">
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
-        <Link to="/" className="flex items-center gap-3" aria-label="Aurelia Home">
-          <span className="grid h-10 w-10 place-items-center rounded-full bg-stone-950 text-sm font-semibold text-[#d8b26e]">A</span>
-          <span className="font-serif text-2xl font-semibold tracking-[0.16em] text-stone-950">AURELIA</span>
+        <Link to="/" className="flex items-center gap-3" aria-label="Spacesic Home">
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-stone-950 text-sm font-semibold text-[#d8b26e]">S</span>
+          <span className="font-serif text-2xl font-semibold tracking-[0.16em] text-stone-950">SPACESIC</span>
         </Link>
         <div className="hidden items-center gap-7 lg:flex">
           {links.map(([label, href]) => <NavLink key={href} to={href} className={navClass}>{label}</NavLink>)}
@@ -36,7 +36,7 @@ export default function Navbar({ cartCount, wishlistCount }) {
             <Icon name="cart" className="h-4 w-4" /> Cart {cartCount}
           </Link>
         </div>
-        <button className="icon-btn lg:hidden" type="button" aria-label="Toggle menu" onClick={() => setOpen((value) => !value)}>
+        <button className="icon-btn menu-toggle" type="button" aria-label="Toggle menu" onClick={() => setOpen((value) => !value)}>
           <Icon name={open ? "close" : "menu"} />
         </button>
       </nav>

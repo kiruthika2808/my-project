@@ -3,7 +3,7 @@ export const products = [
     id: "aster-boucle-lounge-chair",
     name: "Aster Boucle Lounge Chair",
     room: "Living Room",
-    brand: "Aurelia Atelier",
+    brand: "Spacesic Atelier",
     designer: "Mira Solen",
     collection: "Quiet Luxe",
     category: "Seating",
@@ -129,7 +129,7 @@ export const products = [
     id: "ciel-ceramic-vase-set",
     name: "Ciel Ceramic Vase Set",
     room: "Decor",
-    brand: "Aurelia Atelier",
+    brand: "Spacesic Atelier",
     designer: "Mira Solen",
     collection: "Quiet Luxe",
     category: "Decor",
@@ -164,11 +164,11 @@ export const designers = [
   ["Sana Iyer", "Textiles and artisan sourcing", "Mumbai", "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=700&q=85"],
 ];
 
-export const brands = ["Aurelia Atelier", "Linea Forma", "Nord House", "Maison Ori", "Vestra Studio", "Tactile Loom"];
+export const brands = ["Spacesic Atelier", "Linea Forma", "Nord House", "Maison Ori", "Vestra Studio", "Tactile Loom"];
 
 export const reviews = [
   ["Anaya Kapoor", "Homeowner", "The pieces feel custom, delivery was careful, and our living room finally looks layered instead of staged."],
-  ["Marcus Reed", "Interior Architect", "Aurelia is where I source when clients want calm luxury with materials that photograph exactly as promised."],
+  ["Marcus Reed", "Interior Architect", "Spacesic is where I source when clients want calm luxury with materials that photograph exactly as promised."],
   ["Nina Shah", "Boutique Hotel Owner", "Premium without being precious. We ordered seating, lights, and tables, and every item arrived beautifully packed."],
 ];
 

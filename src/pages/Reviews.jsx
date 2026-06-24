@@ -4,7 +4,7 @@ import { reviews } from "../data";
 export default function Reviews() {
   return (
     <>
-      <PageHero eyebrow="Reviews" title="Real rooms, real reactions." text="See what homeowners, designers, and boutique hospitality teams say after living with Aurelia pieces." image="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1500&q=85" />
+      <PageHero eyebrow="Reviews" title="Real rooms, real reactions." text="See what homeowners, designers, and boutique hospitality teams say after living with Spacesic pieces." image="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1500&q=85" />
       <section className="section bg-[#fbfaf7]">
         <div className="mx-auto grid max-w-7xl gap-6 px-5 sm:px-8 md:grid-cols-3">
           {reviews.map(([name, role, text]) => (

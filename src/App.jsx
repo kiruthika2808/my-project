@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import { AdminProvider } from "./context/AdminContext";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
 import Brands from "./pages/Brands";
@@ -20,8 +21,11 @@ import Reviews from "./pages/Reviews";
 import Rooms from "./pages/Rooms";
 import Shop from "./pages/Shop";
 import Wishlist from "./pages/Wishlist";
+import AdminRoutes from "./routes/AdminRoutes";
 
 export default function App() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
   const [wishlist, setWishlist] = useState(["aster-boucle-lounge-chair", "lumi-arc-floor-lamp"]);
   const [cart, setCart] = useState([
     { id: "aster-boucle-lounge-chair", qty: 1 },
@@ -55,8 +59,9 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-[#fbfaf7] text-stone-950">
-      <Navbar cartCount={cartCount} wishlistCount={wishlist.length} />
+      {!isAdmin && <Navbar cartCount={cartCount} wishlistCount={wishlist.length} />}
       <Routes>
+        <Route path="/admin/*" element={<AdminProvider><AdminRoutes /></AdminProvider>} />
         <Route path="/" element={<Home shop={shop} />} />
         <Route path="/shop" element={<Shop shop={shop} />} />
         <Route path="/rooms" element={<Rooms />} />
@@ -76,7 +81,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile shop={shop} />} />
       </Routes>
-      <Footer />
+      {!isAdmin && <Footer />}
     </main>
   );
 }

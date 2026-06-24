@@ -9,8 +9,8 @@ export default function Footer() {
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-[#d8b26e] text-sm font-semibold text-stone-950">A</span>
-              <span className="font-serif text-2xl font-semibold tracking-[0.16em] text-white">AURELIA</span>
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-[#d8b26e] text-sm font-semibold text-stone-950">S</span>
+              <span className="font-serif text-2xl font-semibold tracking-[0.16em] text-white">SPACESIC</span>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-7">Premium interior design commerce for homes that feel collected, composed, and deeply personal.</p>
           </div>
@@ -26,7 +26,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-12 flex flex-col justify-between gap-5 border-t border-white/10 pt-6 text-sm sm:flex-row">
-          <p>Copyright 2026 Aurelia Home. All rights reserved.</p>
+          <p>Copyright 2026 Spacesic Home. All rights reserved.</p>
           <div className="flex gap-5">
             <a href="https://www.instagram.com" className="hover:text-white">Instagram</a>
             <a href="https://www.pinterest.com" className="hover:text-white">Pinterest</a>

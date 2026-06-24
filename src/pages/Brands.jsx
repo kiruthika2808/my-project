@@ -4,7 +4,7 @@ import { brands } from "../data";
 export default function Brands() {
   return (
     <>
-      <PageHero eyebrow="Brands" title="Design houses with material integrity." text="Aurelia sources from independent studios and established makers known for detail, finish, and responsible production." image="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1500&q=85" />
+      <PageHero eyebrow="Brands" title="Design houses with material integrity." text="Spacesic sources from independent studios and established makers known for detail, finish, and responsible production." image="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1500&q=85" />
       <section className="section bg-white">
         <div className="mx-auto grid max-w-7xl gap-4 px-5 sm:grid-cols-2 sm:px-8 lg:grid-cols-3">
           {brands.map((brand) => (
