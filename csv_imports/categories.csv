@@ -1,0 +1,6 @@
+id,name,enabled,productCount
+seating,Seating,true,42
+tables,Tables,true,35
+lighting,Lighting,true,28
+decor,Decor,false,57
+textiles,Textiles,true,31

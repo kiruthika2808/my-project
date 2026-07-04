@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
 
-export function PageHero({ eyebrow, title, text, image }) {
+export function PageHero({ eyebrow, title, text }) {
   return (
-    <section className="relative overflow-hidden bg-stone-950 text-white">
-      {image && <img className="absolute inset-0 h-full w-full object-cover opacity-45" src={image} alt="" />}
-      <div className="absolute inset-0 bg-gradient-to-r from-stone-950 via-stone-950/75 to-stone-950/25" />
-      <div className="relative mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:py-28">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#d8b26e]">{eyebrow}</p>
-        <h1 className="mt-4 max-w-4xl font-serif text-5xl font-semibold leading-none sm:text-6xl lg:text-7xl">{title}</h1>
-        <p className="mt-6 max-w-2xl text-lg leading-8 text-white/75">{text}</p>
+    <section className="relative overflow-hidden bg-[#F3ECE6] py-14 border-b border-stone-200/30">
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#B88D4D]">{eyebrow}</p>
+        <h1 className="mt-4 font-serif text-4xl font-normal leading-tight text-stone-900 sm:text-5xl">{title}</h1>
+        <p className="mt-3 max-w-2xl text-stone-500 text-sm leading-relaxed">{text}</p>
       </div>
     </section>
   );
@@ -16,33 +14,47 @@ export function PageHero({ eyebrow, title, text, image }) {
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#fbfaf7]">
-      <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-12 px-5 py-10 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:py-16">
-        <div className="animate-rise">
-          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-[#9c6f32]">Premium Interior Marketplace</p>
-          <h1 className="mt-5 max-w-3xl font-serif text-5xl font-semibold leading-[0.95] text-stone-950 sm:text-6xl lg:text-7xl">
-            Curated rooms for a quieter kind of luxury.
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-stone-600">
-            Shop furniture, lighting, textiles, and decor selected by interior designers for refined everyday living.
+    <section className="relative overflow-hidden bg-[#FDFBF7] py-12 lg:py-20">
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[0.9fr_1.1fr]">
+        {/* Left Column Text Content */}
+        <div className="animate-rise flex flex-col justify-center pr-4">
+          <p className="font-sans text-[11px] font-bold uppercase tracking-[0.3em] text-[#B88D4D]">
+            Timeless design.
           </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link className="btn-dark" to="/shop">Shop Collection</Link>
-            <Link className="btn-light" to="/rooms">Explore Rooms</Link>
+          <h1 className="mt-5 font-serif text-5xl font-normal leading-[1.05] text-stone-900 sm:text-6xl lg:text-[76px] xl:text-[84px]">
+            Crafted for <br />
+            Modern Living
+          </h1>
+          <p className="mt-6 max-w-md font-sans text-sm leading-6 text-stone-500">
+            Timeless furniture designed for elegant homes.
+          </p>
+          <div className="mt-10">
+            <Link 
+              className="group inline-flex items-center gap-3 rounded-full bg-[#222222] px-7 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#B88D4D] hover:shadow-lg" 
+              to="/shop"
+            >
+              Shop Collection
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          </div>
+          
+          {/* Slider Pagination Indicator */}
+          <div className="mt-16 flex items-center gap-4">
+            <span className="font-serif text-sm font-semibold text-stone-900">01</span>
+            <div className="h-[2px] w-20 bg-stone-200">
+              <div className="h-full w-1/3 bg-stone-900" />
+            </div>
+            <span className="font-serif text-sm font-semibold text-stone-300">03</span>
           </div>
         </div>
-        <div className="relative min-h-[470px] animate-fade lg:min-h-[650px]">
-          <img className="absolute inset-0 h-full w-full rounded-[2rem] object-cover shadow-2xl shadow-stone-300/60" src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1500&q=85" alt="Elegant neutral living room" />
-          <div className="absolute inset-x-5 bottom-5 rounded-3xl border border-white/45 bg-white/85 p-5 shadow-xl backdrop-blur-xl sm:inset-x-auto sm:right-5 sm:w-80">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-500">Designer edit</p>
-            <div className="mt-3 flex items-end justify-between gap-5">
-              <div>
-                <h2 className="font-serif text-3xl font-semibold text-stone-950">Calm Modern</h2>
-                <p className="mt-1 text-sm text-stone-600">24-piece living room bundle</p>
-              </div>
-              <p className="text-lg font-semibold text-[#9c6f32]">$8,240</p>
-            </div>
-          </div>
+
+        {/* Right Column Sofa Image */}
+        <div className="relative min-h-[380px] sm:min-h-[480px] lg:min-h-[600px] xl:min-h-[640px] animate-fade">
+          <img 
+            className="absolute inset-0 h-full w-full rounded-2xl object-cover shadow-2xl shadow-stone-100" 
+            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1500&q=85" 
+            alt="Spacesic curated luxury curved sofa" 
+          />
         </div>
       </div>
     </section>

@@ -28,27 +28,36 @@ export default function AdminLayout() {
     <div className={darkMode ? "dark" : ""}>
       <div className="min-h-screen bg-stone-100 text-stone-950 dark:bg-stone-950 dark:text-white">
         <Toast />
-        <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-stone-200 bg-white px-5 py-6 dark:border-white/10 dark:bg-stone-900 lg:block">
+        <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 border-r border-stone-800 bg-[#1c1917] px-6 py-6 text-stone-300 lg:block">
           <NavLink to="/admin" className="flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center rounded-2xl bg-stone-950 font-bold text-[#d8b26e] dark:bg-white dark:text-stone-950">S</span>
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 font-bold text-[#d8b26e] text-lg font-serif">S</span>
             <div>
-              <p className="font-serif text-2xl font-bold tracking-[0.16em]">SPACESIC</p>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-500">Admin</p>
+              <p className="font-serif text-xl font-bold tracking-[0.18em] text-white">SPACESIC</p>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">Admin Panel</p>
             </div>
           </NavLink>
-          <nav className="mt-8 grid gap-2">
+          <nav className="mt-10 grid gap-1.5">
             {navItems.map(([label, href]) => (
               <NavLink
                 key={href}
                 to={href}
                 end={href === "/admin"}
-                className={({ isActive }) => `rounded-xl px-4 py-3 text-sm font-bold transition ${isActive ? "bg-stone-950 text-white dark:bg-white dark:text-stone-950" : "text-stone-600 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-white/10"}`}
+                className={({ isActive }) => `rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition ${
+                  isActive 
+                    ? "bg-white/10 text-white border-l-2 border-[#d8b26e]" 
+                    : "text-stone-400 hover:bg-white/5 hover:text-white"
+                }`}
               >
                 {label}
               </NavLink>
             ))}
           </nav>
-          <button className="admin-btn-secondary mt-8 w-full" onClick={handleLogout}>Logout</button>
+          <button 
+            className="mt-10 w-full h-10 rounded-full border border-stone-700 bg-transparent text-xs font-bold uppercase tracking-wider text-stone-300 hover:bg-white/5 hover:text-white transition cursor-pointer" 
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </aside>
 
         <div className="lg:pl-72">

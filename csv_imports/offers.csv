@@ -1,0 +1,3 @@
+id,code,discount_percent,active,description
+off-1,WELCOME10,10,true,10% off your first purchase
+off-2,SPRING20,20,true,20% off selected spring items

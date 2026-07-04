@@ -7,7 +7,7 @@ export default function About() {
       <section className="section bg-white">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 sm:px-8 lg:grid-cols-3">
           {["Curated with restraint", "Built for real homes", "Supported by designers"].map((heading) => (
-            <div key={heading} className="rounded-3xl border border-stone-200 bg-[#fbfaf7] p-7">
+            <div key={heading} className="rounded-lg border border-stone-200 bg-[#F3EFE6] p-7">
               <h2 className="font-serif text-3xl font-semibold">{heading}</h2>
               <p className="mt-4 leading-8 text-stone-600">Every edit considers scale, texture, durability, delivery, and the small rituals that make a room feel finished.</p>
             </div>

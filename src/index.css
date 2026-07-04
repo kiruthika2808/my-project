@@ -1,12 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --color-cream: #FDFBF7;
+  --color-stone-warm: #F3ECE6;
+  --color-charcoal: #222222;
+  --color-gold: #B88D4D;
+  --color-olive: #789E7E;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", Inter, sans-serif;
+}
+
 :root {
-  color: #1c1917;
-  background: #fbfaf7;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  color: #222222;
+  background: #FDFBF7;
+  font-family: "Manrope", Inter, ui-sans-serif, system-ui, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -44,12 +53,12 @@ img {
 }
 
 ::selection {
-  background: #d8b26e;
-  color: #1c1917;
+  background: #B88D4D;
+  color: #FDFBF7;
 }
 
 .font-serif {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Cormorant Garamond", Georgia, serif;
 }
 
 .section {
@@ -71,17 +80,20 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
-  background: #1c1917;
+  border-radius: 9999px;
+  background: #222222;
   color: #fff;
   min-height: 3.5rem;
-  padding: 0 1.75rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  padding: 0 2.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .btn-dark:hover {
-  background: #292524;
+  background: #B88D4D;
+  color: #fff;
   transform: translateY(-1px);
 }
 
@@ -90,19 +102,22 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #d6d3d1;
-  border-radius: 999px;
-  background: #fff;
-  color: #1c1917;
+  border: 1px solid #222222;
+  border-radius: 9999px;
+  background: transparent;
+  color: #222222;
   min-height: 3.5rem;
-  padding: 0 1.75rem;
-  font-size: 0.875rem;
-  font-weight: 700;
+  padding: 0 2.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .btn-light:hover,
 .pill-link:hover {
-  border-color: #1c1917;
+  border-color: #B88D4D;
+  color: #B88D4D;
 }
 
 .icon-btn {
@@ -136,7 +151,7 @@ img {
   min-height: 3.5rem;
   width: 100%;
   border: 1px solid #e7e5e4;
-  border-radius: 999px;
+  border-radius: 0px;
   background: #fff;
   padding: 0 1.25rem;
   color: #1c1917;
@@ -144,13 +159,13 @@ img {
 }
 
 .form-input {
-  border-radius: 1.25rem;
+  border-radius: 0px;
 }
 
 .filter-select:focus,
 .form-input:focus {
-  border-color: #9c6f32;
-  box-shadow: 0 0 0 4px rgb(216 178 110 / 18%);
+  border-color: #8C6B3C;
+  box-shadow: 0 0 0 4px rgb(176 141 87 / 18%);
 }
 
 .qty-btn {
@@ -181,8 +196,8 @@ img {
 }
 
 .admin-input:focus {
-  border-color: #9c6f32;
-  box-shadow: 0 0 0 4px rgb(216 178 110 / 18%);
+  border-color: #8C6B3C;
+  box-shadow: 0 0 0 4px rgb(176 141 87 / 18%);
 }
 
 .dark .admin-input {
@@ -331,7 +346,7 @@ img {
 }
 
 .dark .admin-switch input:checked + span {
-  background: #d8b26e;
+  background: #B08D57;
 }
 
 .animate-rise {

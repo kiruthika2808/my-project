@@ -1,0 +1,5 @@
+id,customerId,customer,email,phone,amount,status,date,items
+SPC-1048,anaya-kapoor,Anaya Kapoor,anaya@example.com,+1 212 555 0131,2960,Processing,"Jun 24, 2026","{""Aster Boucle Lounge Chair"",""Ciel Ceramic Vase Set""}"
+SPC-1047,marcus-reed,Marcus Reed,marcus@example.com,+1 646 555 0188,620,Shipped,"Jun 23, 2026","{""Lumi Arc Floor Lamp""}"
+SPC-1046,nina-shah,Nina Shah,nina@example.com,+1 917 555 0155,4250,Pending,"Jun 22, 2026","{""Solene Travertine Dining Table"",""Serra Walnut Sideboard""}"
+SPC-1045,clara-wen,Clara Wen,clara@example.com,+1 718 555 0164,1890,Delivered,"Jun 21, 2026","{""Marlow Linen Platform Bed""}"

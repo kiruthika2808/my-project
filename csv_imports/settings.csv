@@ -1,0 +1,2 @@
+id,storeName,supportEmail,currency,paymentProvider,shippingZone,adminName
+1,Spacesic Home,hello@spacesichome.com,USD,Stripe,United States,Spacesic Admin

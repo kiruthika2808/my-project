@@ -1,7 +1,8 @@
 import { PageHero } from "../components/Hero";
-import { faqs } from "../data";
+import { useStore } from "../context/StoreContext";
 
 export default function FAQ() {
+  const { faqs } = useStore();
   return (
     <>
       <PageHero eyebrow="FAQ" title="Everything before the final yes." text="Answers about design help, shipping, returns, trade programs, and product care." image="https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1500&q=85" />
