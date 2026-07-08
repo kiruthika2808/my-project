@@ -8,8 +8,9 @@ const navItems = [
   ["Orders", "/admin/orders"],
   ["Customers", "/admin/customers"],
   ["Categories", "/admin/categories"],
-  ["Analytics", "/admin/analytics"],
   ["Reviews", "/admin/reviews"],
+  ["Content", "/admin/content"],
+  ["Analytics", "/admin/analytics"],
   ["Settings", "/admin/settings"],
 ];
 

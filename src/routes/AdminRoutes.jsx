@@ -11,6 +11,7 @@ import Orders from "../pages/admin/Orders";
 import Products from "../pages/admin/Products";
 import Reviews from "../pages/admin/Reviews";
 import Settings from "../pages/admin/Settings";
+import Content from "../pages/admin/Content";
 import ProtectedRoute from "./ProtectedRoute";
 import { ErrorBoundary } from "../components/admin/ErrorBoundary";
 
@@ -30,6 +31,7 @@ export default function AdminRoutes() {
             <Route path="categories" element={<Categories />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="reviews" element={<Reviews />} />
+            <Route path="content" element={<Content />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Route>

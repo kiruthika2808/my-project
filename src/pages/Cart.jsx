@@ -22,7 +22,9 @@ export function OrderSummary({ subtotal, actionText, action }) {
 
 export default function Cart({ shop }) {
   const { products } = useStore();
-  const cartLines = shop.cart.map((line) => ({ ...line, product: products.find((product) => product.id === line.id) || line.product })).filter((line) => line.product);
+  const cartLines = shop.cart
+    .map((line) => ({ ...line, product: products.find((product) => product.id === line.id) || line.product }))
+    .filter((line) => line.product);
   const subtotal = cartLines.reduce((sum, line) => sum + line.product.price * line.qty, 0);
 
   return (

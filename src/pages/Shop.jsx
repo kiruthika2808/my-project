@@ -9,6 +9,7 @@ export default function Shop({ shop }) {
   const [params, setParams] = useSearchParams();
   const query = params.get("q") || "";
   const collection = params.get("collection") || "";
+  const normalizedCollection = collection.trim().toLowerCase();
 
   // Filtering states
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -51,7 +52,7 @@ export default function Shop({ shop }) {
       if (query && !text.includes(query.toLowerCase())) return false;
 
       // 2. Collection matching
-      if (collection && product.collection !== collection) return false;
+      if (normalizedCollection && (product.collection || "").trim().toLowerCase() !== normalizedCollection) return false;
 
       // 3. Category matching
       if (selectedCategory !== "All") {
@@ -92,7 +93,7 @@ export default function Shop({ shop }) {
     if (sort === "Price High") result = [...result].sort((a, b) => b.price - a.price);
     if (sort === "Rating") result = [...result].sort((a, b) => b.rating - a.rating);
     return result;
-  }, [products, query, collection, selectedCategory, selectedRoom, maxPrice, selectedRating, sort]);
+  }, [products, query, normalizedCollection, selectedCategory, selectedRoom, maxPrice, selectedRating, sort]);
 
   return (
     <div className="bg-[#FDFBF7] min-h-screen">

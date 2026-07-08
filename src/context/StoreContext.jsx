@@ -155,8 +155,7 @@ export function StoreProvider({ children }) {
   }, []);
 
   // Sync state to local storage or DB on modification
-  const syncWishlist = async (updatedWishlist) => {
-    setWishlist(updatedWishlist);
+  const persistWishlist = async (updatedWishlist) => {
     if (user) {
       await storeService.syncWishlistItems(user.id, updatedWishlist);
     } else {
@@ -164,8 +163,7 @@ export function StoreProvider({ children }) {
     }
   };
 
-  const syncCart = async (updatedCart) => {
-    setCart(updatedCart);
+  const persistCart = async (updatedCart) => {
     if (user) {
       await storeService.syncCartItems(user.id, updatedCart);
     } else {
@@ -176,37 +174,42 @@ export function StoreProvider({ children }) {
   // Actions
   const addToCart = (productOrId, qty = 1) => {
     const id = typeof productOrId === "string" ? productOrId : productOrId.id;
+    if (!id) return;
     const product = typeof productOrId === "string" ? products.find((item) => item.id === id) : productOrId;
-    const existing = cart.find((item) => item.id === id);
-    let updated;
-    if (existing) {
-      updated = cart.map((item) => (item.id === id ? { ...item, product: item.product || product, qty: item.qty + qty } : item));
-    } else {
-      updated = [...cart, { id, qty, product }];
-    }
-    syncCart(updated);
+    setCart((currentCart) => {
+      const existing = currentCart.find((item) => item.id === id);
+      const updated = existing
+        ? currentCart.map((item) => (item.id === id ? { ...item, product: item.product || product, qty: item.qty + qty } : item))
+        : [...currentCart, { id, qty, product }];
+      persistCart(updated);
+      return updated;
+    });
     setCartDrawerOpen(true);
   };
 
   const updateQty = (id, qty) => {
-    let updated;
-    if (qty < 1) {
-      updated = cart.filter((item) => item.id !== id);
-    } else {
-      updated = cart.map((item) => (item.id === id ? { ...item, qty } : item));
-    }
-    syncCart(updated);
+    setCart((currentCart) => {
+      const updated = qty < 1
+        ? currentCart.filter((item) => item.id !== id)
+        : currentCart.map((item) => (item.id === id ? { ...item, qty } : item));
+      persistCart(updated);
+      return updated;
+    });
   };
 
   const toggleWishlist = (id) => {
-    const updated = wishlist.includes(id)
-      ? wishlist.filter((item) => item !== id)
-      : [...wishlist, id];
-    syncWishlist(updated);
+    setWishlist((currentWishlist) => {
+      const updated = currentWishlist.includes(id)
+        ? currentWishlist.filter((item) => item !== id)
+        : [...currentWishlist, id];
+      persistWishlist(updated);
+      return updated;
+    });
   };
 
   const clearCart = () => {
-    syncCart([]);
+    setCart([]);
+    persistCart([]);
   };
 
   // User auth actions
@@ -265,14 +268,14 @@ export function StoreProvider({ children }) {
       // 2. Format order data
       const orderId = "SPC-" + Math.floor(1000 + Math.random() * 9000);
       const amount = cart.reduce((sum, line) => {
-        const product = products.find((p) => p.id === line.id);
+        const product = products.find((p) => p.id === line.id) || line.product;
         return sum + (product ? product.price * line.qty : 0);
       }, 0) + 180; // include delivery
 
       // Extract item names
       const itemNames = cart
         .map((line) => {
-          const product = products.find((p) => p.id === line.id);
+          const product = products.find((p) => p.id === line.id) || line.product;
           return product ? product.name : null;
         })
         .filter(Boolean);

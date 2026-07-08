@@ -1,6 +1,12 @@
 import { createContext, useContext, useMemo, useReducer, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import { initialSettings } from "../services/adminData";
+import { productsService } from "../services/productsService";
+import { categoriesService } from "../services/categoriesService";
+import { customersService } from "../services/customersService";
+import { ordersService } from "../services/ordersService";
+import { reviewsService } from "../services/reviewsService";
+import { contentService } from "../services/contentService";
 
 const AdminContext = createContext(null);
 
@@ -14,12 +20,15 @@ const initialState = {
   orders: [],
   customers: [],
   reviews: [],
+  rooms: [],
+  collections: [],
+  designers: [],
+  brands: [],
+  posts: [],
+  faqs: [],
+  enquiries: [],
   settings: initialSettings,
 };
-
-function slugify(value) {
-  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
 
 function reducer(state, action) {
   switch (action.type) {
@@ -30,51 +39,40 @@ function reducer(state, action) {
     case "SET_INITIAL_DATA":
       return {
         ...state,
-        products: action.payload.products,
-        categories: action.payload.categories,
-        orders: action.payload.orders,
-        customers: action.payload.customers,
-        reviews: action.payload.reviews,
-        settings: action.payload.settings,
+        ...action.payload,
       };
+    case "SET_DATA":
+      return { ...state, [action.payload.key]: action.payload.data };
+    case "ADD_ITEM":
+      return {
+        ...state,
+        [action.payload.key]: [action.payload.item, ...state[action.payload.key]],
+        toast: { type: "success", message: `${action.payload.label} created successfully.` },
+      };
+    case "UPDATE_ITEM": {
+      const idField = action.payload.idField || "id";
+      return {
+        ...state,
+        [action.payload.key]: state[action.payload.key].map((item) =>
+          item[idField] === action.payload.item[idField] ? { ...item, ...action.payload.item } : item
+        ),
+        toast: { type: "success", message: `${action.payload.label} updated successfully.` },
+      };
+    }
+    case "DELETE_ITEM": {
+      const idField = action.payload.idField || "id";
+      return {
+        ...state,
+        [action.payload.key]: state[action.payload.key].filter((item) => item[idField] !== action.payload.id),
+        toast: { type: "success", message: `${action.payload.label} deleted successfully.` },
+      };
+    }
     case "TOGGLE_THEME":
       return { ...state, darkMode: !state.darkMode };
     case "TOAST":
       return { ...state, toast: action.payload };
     case "CLEAR_TOAST":
       return { ...state, toast: null };
-    case "ADD_PRODUCT":
-      return {
-        ...state,
-        products: [action.payload, ...state.products],
-        toast: { type: "success", message: "Product added." },
-      };
-    case "UPDATE_PRODUCT":
-      return {
-        ...state,
-        products: state.products.map((product) => (product.id === action.payload.id ? { ...product, ...action.payload } : product)),
-        toast: { type: "success", message: "Product updated." },
-      };
-    case "DELETE_PRODUCT":
-      return { ...state, products: state.products.filter((product) => product.id !== action.payload), toast: { type: "success", message: "Product deleted." } };
-    case "ADD_CATEGORY":
-      return { ...state, categories: [action.payload, ...state.categories], toast: { type: "success", message: "Category created." } };
-    case "UPDATE_CATEGORY":
-      return { ...state, categories: state.categories.map((category) => (category.id === action.payload.id ? { ...category, ...action.payload } : category)), toast: { type: "success", message: "Category updated." } };
-    case "DELETE_CATEGORY":
-      return { ...state, categories: state.categories.filter((category) => category.id !== action.payload), toast: { type: "success", message: "Category deleted." } };
-    case "UPDATE_ORDER_STATUS":
-      return {
-        ...state,
-        orders: state.orders.map((order) => (order.id === action.payload.id ? { ...order, status: action.payload.status } : order)),
-        toast: { type: "success", message: "Order status updated." },
-      };
-    case "APPROVE_REVIEW":
-      return { ...state, reviews: state.reviews.map((review) => (review.id === action.payload ? { ...review, status: "Approved" } : review)), toast: { type: "success", message: "Review approved." } };
-    case "DELETE_REVIEW":
-      return { ...state, reviews: state.reviews.filter((review) => review.id !== action.payload), toast: { type: "success", message: "Review deleted." } };
-    case "UPDATE_SETTINGS":
-      return { ...state, settings: { ...state.settings, ...action.payload }, toast: { type: "success", message: "Settings saved." } };
     default:
       return state;
   }
@@ -83,8 +81,66 @@ function reducer(state, action) {
 export function AdminProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const fetchData = async () => {
+    dispatch({ type: "SET_LOADING", payload: true });
+    try {
+      const [
+        dbProducts,
+        dbCategories,
+        dbOrders,
+        dbCustomers,
+        dbReviews,
+        dbSettings,
+        dbRooms,
+        dbCollections,
+        dbDesigners,
+        dbBrands,
+        dbPosts,
+        dbFaqs,
+        dbEnquiries,
+      ] = await Promise.all([
+        productsService.fetchAll().catch((e) => { console.error(e); return []; }),
+        categoriesService.fetchAll().catch((e) => { console.error(e); return []; }),
+        ordersService.fetchAll().catch((e) => { console.error(e); return []; }),
+        customersService.fetchAll().catch((e) => { console.error(e); return []; }),
+        reviewsService.fetchAll().catch((e) => { console.error(e); return []; }),
+        supabase.from("settings").select("*").eq("id", 1).maybeSingle().then(({ data }) => data || initialSettings).catch((e) => { console.error(e); return initialSettings; }),
+        contentService.fetchRooms().catch((e) => { console.error(e); return []; }),
+        contentService.fetchCollections().catch((e) => { console.error(e); return []; }),
+        contentService.fetchDesigners().catch((e) => { console.error(e); return []; }),
+        contentService.fetchBrands().catch((e) => { console.error(e); return []; }),
+        contentService.fetchPosts().catch((e) => { console.error(e); return []; }),
+        contentService.fetchFaqs().catch((e) => { console.error(e); return []; }),
+        contentService.fetchEnquiries().catch((e) => { console.error(e); return []; }),
+      ]);
+
+      dispatch({
+        type: "SET_INITIAL_DATA",
+        payload: {
+          products: dbProducts,
+          categories: dbCategories,
+          orders: dbOrders,
+          customers: dbCustomers,
+          reviews: dbReviews,
+          settings: dbSettings,
+          rooms: dbRooms,
+          collections: dbCollections,
+          designers: dbDesigners,
+          brands: dbBrands,
+          posts: dbPosts,
+          faqs: dbFaqs,
+          enquiries: dbEnquiries,
+        },
+      });
+    } catch (err) {
+      console.error("Fetch initial data failed:", err);
+      dispatch({ type: "TOAST", payload: { type: "error", message: "Failed to load database data." } });
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
+    }
+  };
+
   useEffect(() => {
-    // Check current auth session
     supabase.auth.getSession().then(({ data: { session } }) => {
       dispatch({ type: "SET_AUTH", payload: !!session });
     });
@@ -93,54 +149,13 @@ export function AdminProvider({ children }) {
       dispatch({ type: "SET_AUTH", payload: !!session });
     });
 
-    // Fetch initial data from Supabase
-    const fetchData = async () => {
-      dispatch({ type: "SET_LOADING", payload: true });
-      try {
-        const [
-          { data: dbProducts, error: pError },
-          { data: dbCategories, error: cError },
-          { data: dbOrders, error: oError },
-          { data: dbCustomers, error: custError },
-          { data: dbReviews, error: rError },
-          { data: dbSettings, error: sError }
-        ] = await Promise.all([
-          supabase.from("products").select("*"),
-          supabase.from("categories").select("*"),
-          supabase.from("orders").select("*"),
-          supabase.from("customers").select("*"),
-          supabase.from("reviews").select("*"),
-          supabase.from("settings").select("*").eq("id", 1).maybeSingle()
-        ]);
-
-        if (pError || cError || oError || custError || rError || sError) {
-          console.error("Error fetching Supabase data:", { pError, cError, oError, custError, rError, sError });
-        }
-
-        dispatch({
-          type: "SET_INITIAL_DATA",
-          payload: {
-            products: dbProducts || [],
-            categories: dbCategories || [],
-            orders: dbOrders || [],
-            customers: dbCustomers || [],
-            reviews: dbReviews || [],
-            settings: dbSettings || initialSettings
-          }
-        });
-      } catch (err) {
-        console.error("Fetch failed:", err);
-      } finally {
-        dispatch({ type: "SET_LOADING", payload: false });
-      }
-    };
-
     fetchData();
 
     return () => subscription.unsubscribe();
   }, []);
 
   const actions = useMemo(() => ({
+    refreshData: fetchData,
     login: async ({ email, password }) => {
       dispatch({ type: "SET_LOADING", payload: true });
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -157,97 +172,350 @@ export function AdminProvider({ children }) {
     },
     toggleTheme: () => dispatch({ type: "TOGGLE_THEME" }),
     clearToast: () => dispatch({ type: "CLEAR_TOAST" }),
+    showToast: (toast) => dispatch({ type: "TOAST", payload: toast }),
+
+    // Products actions
     addProduct: async (product) => {
-      const id = slugify(product.name);
-      const newProduct = {
-        ...product,
-        id,
-        badge: "New",
-        rating: 4.8,
-        reviews: 0
-      };
-      const { error } = await supabase.from("products").insert(newProduct);
-      if (error) {
+      try {
+        const data = await productsService.create(product);
+        dispatch({ type: "ADD_ITEM", payload: { key: "products", item: data, label: "Product" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "ADD_PRODUCT", payload: newProduct });
+        throw error;
       }
     },
-    updateProduct: async (product) => {
-      const { error } = await supabase.from("products").update(product).eq("id", product.id);
-      if (error) {
+    updateProduct: async (id, product) => {
+      try {
+        const data = await productsService.update(id, product);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "products", item: data, label: "Product" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "UPDATE_PRODUCT", payload: product });
+        throw error;
       }
     },
     deleteProduct: async (id) => {
-      const { error } = await supabase.from("products").delete().eq("id", id);
-      if (error) {
+      try {
+        await productsService.delete(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "products", id, label: "Product" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "DELETE_PRODUCT", payload: id });
+        throw error;
       }
     },
+
+    // Categories actions
     addCategory: async (category) => {
-      const id = slugify(category.name);
-      const newCategory = { id, productCount: 0, ...category };
-      const { error } = await supabase.from("categories").insert(newCategory);
-      if (error) {
+      try {
+        const data = await categoriesService.create(category);
+        dispatch({ type: "ADD_ITEM", payload: { key: "categories", item: data, label: "Category" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "ADD_CATEGORY", payload: newCategory });
+        throw error;
       }
     },
-    updateCategory: async (category) => {
-      const { error } = await supabase.from("categories").update(category).eq("id", category.id);
-      if (error) {
+    updateCategory: async (id, category) => {
+      try {
+        const data = await categoriesService.update(id, category);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "categories", item: data, label: "Category" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "UPDATE_CATEGORY", payload: category });
+        throw error;
       }
     },
     deleteCategory: async (id) => {
-      const { error } = await supabase.from("categories").delete().eq("id", id);
-      if (error) {
+      try {
+        await categoriesService.delete(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "categories", id, label: "Category" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "DELETE_CATEGORY", payload: id });
+        throw error;
       }
     },
-    updateOrderStatus: async (id, status) => {
-      const { error } = await supabase.from("orders").update({ status }).eq("id", id);
-      if (error) {
+
+    // Customers actions
+    addCustomer: async (customer) => {
+      try {
+        const data = await customersService.create(customer);
+        dispatch({ type: "ADD_ITEM", payload: { key: "customers", item: data, label: "Customer" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "UPDATE_ORDER_STATUS", payload: { id, status } });
+        throw error;
       }
     },
-    approveReview: async (id) => {
-      const { error } = await supabase.from("reviews").update({ status: "Approved" }).eq("id", id);
-      if (error) {
+    updateCustomer: async (id, customer) => {
+      try {
+        const data = await customersService.update(id, customer);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "customers", item: data, label: "Customer" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "APPROVE_REVIEW", payload: id });
+        throw error;
+      }
+    },
+    deleteCustomer: async (id) => {
+      try {
+        await customersService.delete(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "customers", id, label: "Customer" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Orders actions
+    addOrder: async (order) => {
+      try {
+        const data = await ordersService.create(order);
+        dispatch({ type: "ADD_ITEM", payload: { key: "orders", item: data, label: "Order" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    updateOrder: async (id, order) => {
+      try {
+        const data = await ordersService.update(id, order);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "orders", item: data, label: "Order" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    deleteOrder: async (id) => {
+      try {
+        await ordersService.delete(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "orders", id, label: "Order" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Reviews actions
+    addReview: async (review) => {
+      try {
+        const data = await reviewsService.create(review);
+        dispatch({ type: "ADD_ITEM", payload: { key: "reviews", item: data, label: "Review" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    updateReview: async (id, review) => {
+      try {
+        const data = await reviewsService.update(id, review);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "reviews", item: data, label: "Review" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
       }
     },
     deleteReview: async (id) => {
-      const { error } = await supabase.from("reviews").delete().eq("id", id);
-      if (error) {
+      try {
+        await reviewsService.delete(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "reviews", id, label: "Review" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "DELETE_REVIEW", payload: id });
+        throw error;
       }
     },
-    updateSettings: async (settingsData) => {
-      const { error } = await supabase.from("settings").update(settingsData).eq("id", 1);
-      if (error) {
+
+    // Rooms actions
+    addRoom: async (room) => {
+      try {
+        const data = await contentService.createRoom(room);
+        dispatch({ type: "ADD_ITEM", payload: { key: "rooms", item: data, label: "Room" } });
+      } catch (error) {
         dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
-      } else {
-        dispatch({ type: "UPDATE_SETTINGS", payload: settingsData });
+        throw error;
+      }
+    },
+    updateRoom: async (name, room) => {
+      try {
+        const data = await contentService.updateRoom(name, room);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "rooms", item: data, idField: "name", label: "Room" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    deleteRoom: async (name) => {
+      try {
+        await contentService.deleteRoom(name);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "rooms", id: name, idField: "name", label: "Room" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Collections actions
+    addCollection: async (collection) => {
+      try {
+        const data = await contentService.createCollection(collection);
+        dispatch({ type: "ADD_ITEM", payload: { key: "collections", item: data, label: "Collection" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    updateCollection: async (name, collection) => {
+      try {
+        const data = await contentService.updateCollection(name, collection);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "collections", item: data, idField: "name", label: "Collection" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    deleteCollection: async (name) => {
+      try {
+        await contentService.deleteCollection(name);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "collections", id: name, idField: "name", label: "Collection" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Designers actions
+    addDesigner: async (designer) => {
+      try {
+        const data = await contentService.createDesigner(designer);
+        dispatch({ type: "ADD_ITEM", payload: { key: "designers", item: data, label: "Designer" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    updateDesigner: async (name, designer) => {
+      try {
+        const data = await contentService.updateDesigner(name, designer);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "designers", item: data, idField: "name", label: "Designer" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    deleteDesigner: async (name) => {
+      try {
+        await contentService.deleteDesigner(name);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "designers", id: name, idField: "name", label: "Designer" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Brands actions
+    addBrand: async (brand) => {
+      try {
+        const data = await contentService.createBrand(brand);
+        dispatch({ type: "ADD_ITEM", payload: { key: "brands", item: data, label: "Brand" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    updateBrand: async (name, brand) => {
+      try {
+        const data = await contentService.updateBrand(name, brand);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "brands", item: data, idField: "name", label: "Brand" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    deleteBrand: async (name) => {
+      try {
+        await contentService.deleteBrand(name);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "brands", id: name, idField: "name", label: "Brand" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Posts actions
+    addPost: async (post) => {
+      try {
+        const data = await contentService.createPost(post);
+        dispatch({ type: "ADD_ITEM", payload: { key: "posts", item: data, label: "Blog Post" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    updatePost: async (id, post) => {
+      try {
+        const data = await contentService.updatePost(id, post);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "posts", item: data, label: "Blog Post" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    deletePost: async (id) => {
+      try {
+        await contentService.deletePost(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "posts", id, label: "Blog Post" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // FAQs actions
+    addFaq: async (faq) => {
+      try {
+        const data = await contentService.createFaq(faq);
+        dispatch({ type: "ADD_ITEM", payload: { key: "faqs", item: data, label: "FAQ" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    updateFaq: async (id, faq) => {
+      try {
+        const data = await contentService.updateFaq(id, faq);
+        dispatch({ type: "UPDATE_ITEM", payload: { key: "faqs", item: data, label: "FAQ" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+    deleteFaq: async (id) => {
+      try {
+        await contentService.deleteFaq(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "faqs", id, label: "FAQ" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Enquiries actions
+    deleteEnquiry: async (id) => {
+      try {
+        await contentService.deleteEnquiry(id);
+        dispatch({ type: "DELETE_ITEM", payload: { key: "enquiries", id, label: "Contact Enquiry" } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
+        throw error;
+      }
+    },
+
+    // Store settings
+    updateSettings: async (settingsData) => {
+      try {
+        const { error } = await supabase.from("settings").update(settingsData).eq("id", 1);
+        if (error) throw error;
+        dispatch({ type: "SET_INITIAL_DATA", payload: { settings: { ...state.settings, ...settingsData } } });
+        dispatch({ type: "TOAST", payload: { type: "success", message: "Settings saved successfully." } });
+      } catch (error) {
+        dispatch({ type: "TOAST", payload: { type: "error", message: error.message } });
       }
     }
-  }), []);
+  }), [state.settings]);
 
   return <AdminContext.Provider value={{ ...state, ...actions }}>{children}</AdminContext.Provider>;
 }

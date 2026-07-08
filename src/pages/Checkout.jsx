@@ -40,7 +40,7 @@ export default function Checkout({ shop }) {
   }, [user]);
 
   const subtotal = shop.cart.reduce((sum, line) => {
-    const product = products.find((item) => item.id === line.id);
+    const product = products.find((item) => item.id === line.id) || line.product;
     return sum + (product ? product.price * line.qty : 0);
   }, 0);
 
@@ -422,7 +422,7 @@ export default function Checkout({ shop }) {
             {/* Scrollable list of items */}
             <div className="mt-4 max-h-60 overflow-y-auto space-y-4 pr-1">
               {shop.cart.map((line) => {
-                const product = products.find((p) => p.id === line.id);
+                const product = products.find((p) => p.id === line.id) || line.product;
                 if (!product) return null;
                 return (
                   <div key={line.id} className="flex gap-3 justify-between items-center text-xs font-semibold text-stone-600">

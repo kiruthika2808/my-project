@@ -28,8 +28,8 @@ export default function CartDrawer() {
   // Resolve cart item details from global products catalog
   const cartItems = cart
     .map((item) => {
-      const p = products.find((prod) => prod.id === item.id);
-      return p || item.product ? { ...(p || item.product), qty: item.qty } : null;
+      const product = products.find((prod) => prod.id === item.id) || item.product;
+      return product ? { ...product, id: item.id, qty: item.qty } : null;
     })
     .filter(Boolean);
 
