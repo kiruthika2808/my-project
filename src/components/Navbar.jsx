@@ -8,7 +8,7 @@ export default function Navbar({ cartCount, wishlistCount }) {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [searchVal, setSearchVal] = useState(params.get("q") || "");
-  const { shop } = useStore();
+  const { shop, user, logout } = useStore();
 
   // Sync search input with URL params
   useEffect(() => {
@@ -81,9 +81,49 @@ export default function Navbar({ cartCount, wishlistCount }) {
               </span>
             )}
           </Link>
-          <Link className="p-2 text-stone-600 hover:text-stone-950 transition" to="/profile" aria-label="Profile">
-            <Icon name="user" className="h-5 w-5" />
-          </Link>
+          {user ? (
+            <div className="relative group">
+              <button className="flex items-center gap-1.5 p-2 text-stone-600 hover:text-stone-950 transition cursor-pointer">
+                <Icon name="user" className="h-5 w-5" />
+                <span className="text-xs font-bold tracking-wider max-w-28 truncate">
+                  {user.user_metadata?.full_name || "Profile"}
+                </span>
+                <span className="text-[9px] text-stone-400">▼</span>
+              </button>
+              <div className="absolute right-0 top-full mt-1 hidden w-40 rounded-xl border border-stone-200 bg-white p-2 shadow-lg dark:border-white/10 dark:bg-stone-900 group-hover:block animate-in fade-in duration-200">
+                <Link
+                  to="/profile"
+                  className="block rounded-lg px-3 py-2 text-xs font-bold uppercase text-stone-600 hover:bg-stone-50 hover:text-stone-950 dark:text-stone-400 dark:hover:bg-stone-850 dark:hover:text-white transition"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={async () => {
+                    await logout();
+                    navigate("/");
+                  }}
+                  className="w-full text-left block rounded-lg px-3 py-2 text-xs font-bold uppercase text-stone-600 hover:bg-stone-50 hover:text-stone-950 dark:text-stone-400 dark:hover:bg-stone-850 dark:hover:text-white transition cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link
+                to="/login"
+                className="text-xs font-bold uppercase tracking-wider text-stone-600 hover:text-stone-950 transition"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="text-xs font-bold uppercase tracking-wider bg-stone-950 text-white px-4 py-2 rounded-full hover:bg-stone-800 transition"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
           
           {/* Cart Icon Trigger for Drawer */}
           <button 
@@ -149,13 +189,22 @@ export default function Navbar({ cartCount, wishlistCount }) {
             ))}
             <div className="grid grid-cols-3 gap-2 pt-3 border-t border-stone-100">
               <Link className="text-center py-2 text-xs font-semibold uppercase bg-stone-100 text-stone-700 hover:bg-stone-200" to="/wishlist" onClick={() => setOpen(false)}>Wishlist</Link>
-              <Link className="text-center py-2 text-xs font-semibold uppercase bg-stone-100 text-stone-700 hover:bg-stone-200" to="/profile" onClick={() => setOpen(false)}>Profile</Link>
-              <button 
-                className="text-center py-2 text-xs font-semibold uppercase bg-stone-950 text-white" 
-                onClick={() => { setOpen(false); navigate("/shop"); }}
-              >
-                Shop
-              </button>
+              {user ? (
+                <>
+                  <Link className="text-center py-2 text-xs font-semibold uppercase bg-stone-100 text-stone-700 hover:bg-stone-200" to="/profile" onClick={() => setOpen(false)}>Profile</Link>
+                  <button 
+                    className="text-center py-2 text-xs font-semibold uppercase bg-red-50 text-red-700 hover:bg-red-100 cursor-pointer" 
+                    onClick={async () => { setOpen(false); await logout(); navigate("/"); }}
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link className="text-center py-2 text-xs font-semibold uppercase bg-stone-100 text-stone-700 hover:bg-stone-200" to="/login" onClick={() => setOpen(false)}>Login</Link>
+                  <Link className="text-center py-2 text-xs font-semibold uppercase bg-stone-950 text-white" to="/register" onClick={() => setOpen(false)}>Sign Up</Link>
+                </>
+              )}
             </div>
           </div>
         </div>

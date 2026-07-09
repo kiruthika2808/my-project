@@ -20,6 +20,11 @@ export default function AdminLayout() {
   const location = useLocation();
   const pendingCount = orders.filter((order) => order.status === "Pending").length + reviews.filter((review) => review.status === "Pending").length;
 
+  const getInitials = (name) => {
+    if (!name) return "?";
+    return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/admin/login");
@@ -68,18 +73,44 @@ export default function AdminLayout() {
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#9c6f32] dark:text-[#d8b26e]">Spacesic admin</p>
                 <h1 className="text-2xl font-bold sm:text-3xl">{navItems.find(([, href]) => href === location.pathname)?.[0] || "Workspace"}</h1>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-3">
                 <select className="admin-input lg:hidden" value={location.pathname} onChange={(event) => navigate(event.target.value)}>
                   {navItems.map(([label, href]) => <option key={href} value={href}>{label}</option>)}
                 </select>
                 <div className="relative">
-                  <button className="admin-btn-secondary w-full sm:w-auto">Notifications</button>
-                  {pendingCount > 0 && <span className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-[#d8b26e] text-xs font-bold text-stone-950">{pendingCount}</span>}
+                  <button 
+                    className="grid h-10 w-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-700 dark:border-white/10 dark:bg-stone-900 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-850 transition cursor-pointer"
+                    title="Notifications"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                  </button>
+                  {pendingCount > 0 && <span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-[#d8b26e] text-[10px] font-bold text-stone-950">{pendingCount}</span>}
                 </div>
-                <button className="admin-btn-secondary" onClick={toggleTheme}>{darkMode ? "Light mode" : "Dark mode"}</button>
-                <div className="rounded-2xl border border-stone-200 bg-white px-4 py-2 dark:border-white/10 dark:bg-stone-950">
-                  <p className="text-sm font-bold">{settings.adminName}</p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">Owner</p>
+                <button 
+                  className="grid h-10 w-10 place-items-center rounded-xl border border-stone-200 bg-white text-stone-700 dark:border-white/10 dark:bg-stone-900 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-850 transition cursor-pointer"
+                  onClick={toggleTheme}
+                  title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                >
+                  {darkMode ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m0 13.5V21M4.93 4.93l1.59 1.59m10.96 10.96l1.59 1.59M3 12h2.25m13.5 0H21M6.52 17.48l-1.59 1.59m10.96-10.96l-1.59 1.59M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                    </svg>
+                  )}
+                </button>
+                <div className="flex items-center gap-2 rounded-xl p-1 pr-3 border border-stone-200 bg-white dark:border-white/10 dark:bg-stone-900 shadow-xs">
+                  <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#d8b26e] text-stone-950 font-bold text-xs">
+                    {getInitials(settings.adminName)}
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <p className="text-xs font-bold leading-tight">{settings.adminName}</p>
+                    <p className="text-[9px] font-semibold text-stone-500 leading-none">Owner</p>
+                  </div>
                 </div>
               </div>
             </div>

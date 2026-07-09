@@ -15,7 +15,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ProductDetails from "./pages/ProductDetails";
 import Profile from "./pages/Profile";
-import Register from "./pages/Register";
+import Signup from "./pages/Signup";
 import Reviews from "./pages/Reviews";
 import Rooms from "./pages/Rooms";
 import Shop from "./pages/Shop";
@@ -51,7 +51,8 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Signup />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile shop={shop} />} />
       </Routes>
       {!isAdmin && <Footer />}
